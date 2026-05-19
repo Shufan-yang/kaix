@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>温馨提醒弹窗</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: "微软雅黑", sans-serif;
+    background-color: #fff;
+  }
+  .popup {
+    position: absolute;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: #000;
+    font-size: 16px;
+    text-align: center;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: fadein 0.3s;
+  }
+  @keyframes fadein {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<script>
+// =====================
+// 弹窗内容和颜色
+// =====================
+const tips = [
+  '多喝水哦~','保持微笑呀','每天都要元气满满',
+  '记得吃水果','保持好心情','好好爱自己',
+  '我想你了','梦想成真','期待下一次见面',
+  '金榜题名','顺顺利利','早点休息',
+  '愿所有烦恼都消失','别熬夜','今天过得开心嘛','天冷了多穿衣服'
+];
+
+const bgColors = [
+  'Lightpink','skyblue','lightgreen','lavender',
+  'Lightyellow','plum','coral','bisque',
+  'aquamarine','mistyrose','honeydew',
+  'lavenderblush','oldlace'
+];
+
+// =====================
+// 创建一个弹窗
+// =====================
+function createPopup(text, x, y, duration=5000) {
+  const popup = document.createElement('div');
+  popup.className = 'popup';
+  popup.textContent = text;
+  popup.style.left = x + 'px';
+  popup.style.top = y + 'px';
+  popup.style.backgroundColor = bgColors[Math.floor(Math.random()*bgColors.length)];
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    popup.remove();
+  }, duration);
+}
+
+// =====================
+// 爱心形状弹窗
+// =====================
+function heartPopups() {
+  const heartPoints = [];
+  const size = 20;
+
+  for (let i=0; i<=628; i+=6) {
+    let t = i/100;
+    let x = size*16*Math.pow(Math.sin(t),3);
+    let y = -size*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+    heartPoints.push([x, y]);
+  }
+
+  const centerX = window.innerWidth/2;
+  const centerY = window.innerHeight/2;
+
+  heartPoints.forEach((p, index) => {
+    setTimeout(() => {
+      let tip = tips[Math.floor(Math.random()*tips.length)];
+      createPopup(tip, centerX + p[0], centerY + p[1], 4000);
+    }, index * 30);
+  });
+
+  // 2秒后开始随机弹窗
+  setTimeout(randomPopups, heartPoints.length*30 + 2000);
+}
+
+// =====================
+// 随机位置弹窗
+// =====================
+function randomPopups() {
+  const count = 100;
+
+  for (let i=0; i<count; i++) {
+    setTimeout(() => {
+      let x = Math.random() * (window.innerWidth - 200);
+      let y = Math.random() * (window.innerHeight - 100);
+      let tip = tips[Math.floor(Math.random()*tips.length)];
+      createPopup(tip, x, y, 4000);
+    }, i*80);
+  }
+}
+
+// =====================
+// 按 ESC 清空弹窗
+// =====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.popup').forEach(p => p.remove());
+  }
+});
+
+// =====================
+// 启动程序
+// =====================
+window.onload = () => {
+  heartPopups();
+};
+</script>
+
+</body>
+</html>
